@@ -1,0 +1,100 @@
+---
+- name: "User.yml"
+  hosts: localhost
+  gather_facts: yes
+  tasks:
+    - name: (fish) add key
+      apt_key:
+        url: "https://download.opensuse.org/repositories/shells:fish:release:3/Debian_10/Release.key"
+        state: present
+      become: yes
+
+    - name: (fish) add repository
+      apt_repository:
+        repo: "deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_10/ /"
+        filename: "fish"
+        state: present
+        update_cache: yes
+      become: yes
+
+    - name: (fish) install fish
+      apt:
+        name: fish
+        state: present
+      become: yes
+
+    - name: (fish) download oh-my-fish
+      get_url:
+        url: https://get.oh-my.fish
+        dest: /tmp/install_oh_my_fish
+
+    - name: (fish) install oh-my-fish
+      command: /usr/bin/fish /tmp/install_oh_my_fish --noninteractive --yes
+
+    - name: (fish) install fonts
+      apt:
+        name: fonts-powerline
+        state: latest
+      become: yes
+
+    - name: (fish) install bobthefish
+      command: /usr/bin/fish -c 'omf install bobthefish'
+
+    - name: (fish) change default shell
+      user:
+        name: "{{ ansible_user }}"
+        state: present
+        shell: /usr/bin/fish
+      become: yes
+
+    - name: (thefuck) install thefuck
+      apt:
+        name: thefuck
+        state: present
+      become: yes
+
+    - name: (thefuck) configure thefuck
+      command: /usr/bin/fish -c 'omf install thefuck'
+
+    - name: (gnome) install dependencies
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+          - alacarte
+          - gnome-shell-extensions
+      become: yes
+
+    - name: (gnome) configure gnome
+      shell: "gsettings set {{ item.schema }} {{ item.key }} {{ item.value }}"
+      with_items:
+        - schema: org.gnome.desktop.calendar
+          key: show-weekdate
+          value: "true"
+        - schema: org.gnome.desktop.peripherals.touchpad
+          key: tap-to-click
+          value: "true"
+        - schema: org.gnome.desktop.background
+          key: show-desktop-icons
+          value: "true"
+
+    - name: (gnome) enable extensions
+      shell: "gnome-shell-extension-tool --enable-extension={{ item }}"
+      ignore_errors: yes
+      with_items:
+        - launch-new-instance@gnome-shell-extensions.gcampax.github.com
+        - window-list@gnome-shell-extensions.gcampax.github.com
+        - places-menu@gnome-shell-extensions.gcampax.github.com
+        - apps-menu@gnome-shell-extensions.gcampax.github.com
+        - alternate-tab@gnome-shell-extensions.gcampax.github.com
+
+    - name: (gnome) configure extensions
+      shell: "gsettings set {{ item.schema }} {{ item.key }} {{ item.value }}"
+      with_items:
+        - schema: org.gnome.shell.extensions.window-list
+          key: grouping-mode
+          value: "auto"
+        - schema: org.gnome.shell.extensions.window-list
+          key: show-on-all-monitors
+          value: "false"

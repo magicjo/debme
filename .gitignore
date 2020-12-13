@@ -1,3 +1,7 @@
+# Packer bin
+packer
+packer.exe
+
 # Cache objects
 packer_cache/
 
@@ -6,3 +10,7 @@ crash.log
 
 # For built boxes
 *.box
+output-*
+
+# IDE
+.idea/

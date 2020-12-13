@@ -1,0 +1,51 @@
+---
+- name: "Vm.yml"
+  hosts: localhost
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: (common) upgrade packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: (virtualbox) install dependencies
+      apt:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - build-essential
+          - dkms
+          - "linux-headers-{{ ansible_kernel }}"
+          - make
+          - perl
+      when:
+        - ansible_virtualization_type == "virtualbox"
+
+    - name: (virtualbox) mount VBoxGuestAdditions.iso
+      mount:
+        path: /mnt
+        src: "/home/{{ ansible_user }}/VBoxGuestAdditions.iso"
+        fstype: iso9660
+        opts: ro,loop
+        state: mounted
+      when: ansible_virtualization_type == "virtualbox"
+
+    - name: (virtualbox) install VBoxGuestAdditions.iso
+      command: sh /mnt/VBoxLinuxAdditions.run
+      register: vbox_result
+      failed_when: "'Running kernel modules will not be replaced until \nthe system is restarted' not in vbox_result.stdout"
+      when: ansible_virtualization_type == "virtualbox"
+
+    - name: (virtualbox) umount VBoxGuestAdditions.iso
+      mount:
+        path: /mnt
+        state: absent
+      when: ansible_virtualization_type == "virtualbox"
+
+    - name: (virtualbox) delete VBoxGuestAdditions.iso
+      file:
+        path: "/home/{{ ansible_user }}/VBoxGuestAdditions.iso"
+        state: absent
+      when: ansible_virtualization_type == "virtualbox"
