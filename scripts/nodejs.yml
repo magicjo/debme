@@ -1,0 +1,33 @@
+---
+- name: "Nodejs.yml"
+  hosts: localhost
+  gather_facts: yes
+  tasks:
+    - name: (nodejs) install dependencies
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+          - build-essential
+          - curl
+      become: yes
+
+    - name: (nodejs) download nvm
+      get_url:
+        url: https://raw.githubusercontent.com/creationix/nvm/v0.37.2/install.sh
+        dest: /tmp/nvm-installer.sh
+        mode: '0777'
+
+    - name: (nodejs) install nvm
+      shell: /tmp/nvm-installer.sh
+      args:
+        chdir: "{{ lookup('env','HOME') }}/"
+        creates: "{{ lookup('env','HOME') }}/.nvm/nvm.sh"
+
+    - name: (nodejs) install default nodejs
+      shell: >
+        . {{ lookup('env','HOME') }}/.nvm/nvm.sh && nvm install node
+      args:
+        executable: /bin/bash
+        chdir: "{{ lookup('env','HOME') }}/"

@@ -2,37 +2,11 @@
 
 > **DEB**ian for **ME**
 
-This project contains the Packer build configurations for **Debian**.
-Each builds a development base for use with VirtualBox.
+This project contains the Packer build configurations, and Ansible recipes for **Debian**.
+Each builds a development base.
 Available builds include:
 
-- debian buster - [`debian10` directory](./debian10)
-
-## Requirements
-
-The following software must be installed/present on your local machine before you can use the project.
-
-- [`packer`](https://www.packer.io/)
-- [`virtualbox`](https://www.virtualbox.org/)
-
-### Validated with
-
-| *Software*    	| *Version* 	|
-| :---              |          ---: |
-| **Windows**    	| 10 (1909) 	|
-| **Packer**     	| 1.6.5     	|
-| **VirtualBox** 	| 6.1.16    	|
-
-## Usage
-Make sure all the required software (listed above) is installed, 
-then cd into one of the box directories and run:
-
-```shell
-# On windows
-$ packer.exe build -var-file 'YOUR-VAR-FILE' debianXX.json
-```
-
-> After a few minutes, Packer should tell you the vm was generated successfully
+- debian buster (*virtualbox*)- [`debian10` directory](./debian10)
 
 ## Authors
 

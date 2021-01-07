@@ -7,7 +7,7 @@ SSH_USER=${SSH_USERNAME}
 
 # Install Ansible
 apt --yes update && apt --yes upgrade
-apt --yes install python3-pip python-apt git
+apt --yes install python3-pip python3-apt apt-transport-https git
 pip3 --no-cache-dir install ansible
 
 # Change sudoers

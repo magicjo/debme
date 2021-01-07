@@ -1,0 +1,194 @@
+---
+- name: "Fish.yml"
+  hosts: localhost
+  gather_facts: yes
+  tasks:
+    - name: (fish) set facts for debian 9
+      set_fact:
+        fish_debian: Debian_9.0
+      when: ansible_lsb.major_release|int == 9
+
+    - name: (fish) set facts for debian 10
+      set_fact:
+        fish_debian: Debian_10
+      when: ansible_lsb.major_release|int == 10
+
+    - name: (fish) add apt repository key
+      apt_key:
+        url: "https://download.opensuse.org/repositories/shells:fish:release:3/{{ fish_debian }}/Release.key"
+        state: present
+      become: yes
+
+    - name: (fish) add apt repository
+      apt_repository:
+        repo: "deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/{{ fish_debian }}/ /"
+        filename: "fish"
+        state: present
+        update_cache: yes
+      become: yes
+
+    - name: (fish) install fish and deps
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+          - fish
+          - fonts-powerline
+      become: yes
+
+    - name: (fish) download oh-my-fish
+      get_url:
+        url: https://get.oh-my.fish
+        dest: /tmp/install_oh_my_fish
+        validate_certs: no
+
+    - name: (fish) install oh-my-fish
+      command: /usr/bin/fish /tmp/install_oh_my_fish --noninteractive --yes
+
+    - name: (fish) install oh-my-fish packages
+      command: "/usr/bin/fish -c 'omf install {{ item }}'"
+      with_items:
+        - bobthefish
+        - thefuck
+        - nvm
+
+    - name: (fish) change default shell
+      user:
+        name: "{{ lookup('env','USER') }}"
+        state: present
+        shell: /usr/bin/fish
+      become: yes
+
+    - name: (fish) configure bobthefish
+      copy:
+        dest: "{{ lookup('env','HOME') }}/.config/fish/conf.d/bobthefish.fish"
+        content: |
+          # See https://github.com/oh-my-fish/theme-bobthefish
+          # set -g theme_display_git no
+          # set -g theme_display_git_dirty no
+          # set -g theme_display_git_untracked no
+          # set -g theme_display_git_ahead_verbose yes
+          # set -g theme_display_git_dirty_verbose yes
+          # set -g theme_display_git_stashed_verbose yes
+          # set -g theme_display_git_default_branch yes
+          # set -g theme_git_default_branches master main
+          # set -g theme_git_worktree_support yes
+          # set -g theme_use_abbreviated_branch_name yes
+          # set -g theme_display_vagrant yes
+          # set -g theme_display_docker_machine no
+          # set -g theme_display_k8s_context yes
+          # set -g theme_display_hg yes
+          # set -g theme_display_virtualenv no
+          # set -g theme_display_nix no
+          # set -g theme_display_ruby no
+          # set -g theme_display_nvm yes
+          # set -g theme_display_user ssh
+          # set -g theme_display_hostname ssh
+          # set -g theme_display_vi no
+          # set -g theme_display_date no
+          # set -g theme_display_cmd_duration yes
+          # set -g theme_title_display_process yes
+          # set -g theme_title_display_path no
+          # set -g theme_title_display_user yes
+          # set -g theme_title_use_abbreviated_path no
+          # set -g theme_date_format "+%a %H:%M"
+          # set -g theme_date_timezone America/Los_Angeles
+          # set -g theme_avoid_ambiguous_glyphs yes
+          # set -g theme_powerline_fonts no
+          # set -g theme_nerd_fonts yes
+          # set -g theme_show_exit_status yes
+          # set -g theme_display_jobs_verbose yes
+          # set -g default_user your_normal_user
+          # set -g theme_color_scheme dark
+          # set -g fish_prompt_pwd_dir_length 0
+          # set -g theme_project_dir_length 1
+          # set -g theme_newline_cursor yes
+          # set -g theme_newline_prompt '$ '
+
+    - name: (fish) configure aliases
+      copy:
+        dest: "{{ lookup('env','HOME') }}/.config/fish/conf.d/aliases.fish"
+        content: |
+          # Colorize the ls output
+          alias ls="ls --color=auto"
+          # List
+          alias ll="ls -l"
+          # List all
+          alias la="ls -la"
+          # Show hidden files
+          alias l.="ls -d .*"
+          # Get rid of command not found
+          alias cd..="cd .."
+          # Quick cd parent
+          alias ..="cd .."
+          # Quick cd parent
+          alias ...="cd ../../../"
+          # Quick cd parent
+          alias ....="cd ../../../../"
+          # Quick cd parent
+          alias .....="cd ../../../../../"
+          # Quick cd parent
+          alias 0.4="cd ../../../../"
+          # Quick cd parent
+          alias 0.5="cd ../../../../../"
+          # Colorize grep
+          alias grep="grep --color=auto"
+          # Colorize egrep
+          alias egrep="egrep --color=auto"
+          # Colorize fgrep
+          alias fgrep="fgrep --color=auto"
+          # Start calculator with math support
+          alias bc="bc -l"
+          # this one saved by butt so many times
+          alias wget="wget -c"
+          # Generate sha1 digest
+          alias sha1="openssl sha1"
+          # shortcut for history
+          alias h="history"
+          # shortcut for jobs
+          alias j="jobs -l"
+          # print date
+          alias now="date +"%T""
+          # print date
+          alias nowtime="now"
+          # print date
+          alias nowdate="date +"%d-%m-%Y""
+          # Stop after sending count ECHO_REQUEST packets
+          alias ping="ping -c 5"
+          # Do not wait interval 1 second, go fast
+          alias fastping="ping -c 100 -s.2"
+          # Show ports
+          alias ports="netstat -tulanp"
+          # rm preserve root
+          alias rm="rm --preserve-root"
+          # chown preserve root
+          alias chown="chown --preserve-root"
+          # chmod preserve root
+          alias chmod="chmod --preserve-root"
+          # chgrp preserve root
+          alias chgrp="chgrp --preserve-root"
+          # pass options to free ##
+          alias meminfo="free -m -l -t"
+          # get top process eating memory
+          alias psmem="ps auxf | sort -nr -k 4"
+          # get top process eating memory 10
+          alias psmem10="ps auxf | sort -nr -k 4 | head -10"
+          # get top process eating cpu
+          alias pscpu="ps auxf | sort -nr -k 3"
+          # get top process eating cpu 10
+          alias pscpu10="ps auxf | sort -nr -k 3 | head -10"
+          # Get server cpu info
+          alias cpuinfo="lscpu"
+          # get GPU ram on desktop / laptop
+          alias gpumeminfo="grep -i --color memory /var/log/Xorg.0.log"
+
+    - name: (fish) configure custom commands
+      copy:
+        dest: "{{ lookup('env','HOME') }}/.config/fish/conf.d/commands.fish"
+        content: |
+          # $> mkcd DIR
+          function mkcd --description 'runs mkdir, and then cd'
+           mkdir -p $argv
+           cd $argv
+          end

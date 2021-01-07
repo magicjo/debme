@@ -1,0 +1,82 @@
+---
+- name: "Ide.yml"
+  hosts: localhost
+  gather_facts: yes
+  tasks:
+    - name: (ide) download vscode
+      get_url:
+        url: https://vscode-update.azurewebsites.net/latest/linux-deb-x64/stable
+        dest: "/tmp/vscode.deb"
+      when: desktop_ui != "none"
+
+    - name: (ide) install vscode
+      apt:
+        deb: "/tmp/vscode.deb"
+      become: yes
+      when: desktop_ui != "none"
+
+    - name: (ide) download pycharm
+      get_url:
+        url: "http://download.jetbrains.com/python/pycharm-community-2020.3.tar.gz"
+        dest: "/tmp/pycharm.tar.gz"
+      when: desktop_ui != "none"
+
+    - name: (ide) ensure pycharm directory exists
+      file:
+        path: /opt/Pycharm
+        state: directory
+      become: yes
+      when: desktop_ui != "none"
+
+    - name: (ide) install pycharm
+      unarchive:
+        src: "/tmp/pycharm.tar.gz"
+        dest: "/opt/Pycharm"
+        copy: false
+        owner: "{{ lookup('env','USER') }}"
+        group: "{{ lookup('env','USER') }}"
+        extra_opts: [--strip-components=1]
+      become: yes
+      when: desktop_ui != "none"
+
+    - name: (ide) fix pycharm permissions
+      file:
+        path: "/opt/Pycharm"
+        owner: "{{ lookup('env','USER') }}"
+        group: "{{ lookup('env','USER') }}"
+        recurse: yes
+      become: yes
+      when: desktop_ui != "none"
+
+    - name: (ide) download webstorm
+      get_url:
+        url: "https://download.jetbrains.com/webstorm/WebStorm-2020.3.tar.gz"
+        dest: "/tmp/webstorm.tar.gz"
+      when: desktop_ui != "none"
+
+    - name: (ide) ensure webstorm directory exists
+      file:
+        path: /opt/WebStorm
+        state: directory
+      become: yes
+      when: desktop_ui != "none"
+
+    - name: (ide) install webstorm
+      unarchive:
+        src: "/tmp/webstorm.tar.gz"
+        dest: "/opt/WebStorm"
+        copy: false
+        owner: "{{ lookup('env','USER') }}"
+        group: "{{ lookup('env','USER') }}"
+        extra_opts: [--strip-components=1]
+      become: yes
+      when: desktop_ui != "none"
+
+    - name: (ide) fix webstorm permissions
+      file:
+        path: "/opt/WebStorm"
+        owner: "{{ lookup('env','USER') }}"
+        group: "{{ lookup('env','USER') }}"
+        recurse: yes
+      become: yes
+      when: desktop_ui != "none"

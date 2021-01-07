@@ -18,10 +18,6 @@ while [ -n "$(deborphan --guess-all --libdevel)" ]; do
 done
 apt --yes purge deborphan dialog
 
-# Zero out the free space to save space in the final image
-dd if=/dev/zero of=/EMPTY bs=1M  || echo "dd exit code $? is suppressed"
-rm -f /EMPTY
-
 # Make sure we wait until all the data is written to disk, otherwise
 # Packer might quite too early before the large files are deleted
 sync

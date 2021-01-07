@@ -1,15 +1,15 @@
 {
-  "_comment": "<PACKER> build -var-file <YOUR_VAR_FILE> debian10.json",
+  "_comment": "<PACKER> build -var-file <YOUR_VAR_FILE> debian10\\debian10.json",
   "builders": [
     {
       "boot_command": [
         "<esc><wait>",
         "auto ",
-        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian10_preseed.cfg ",
         "passwd/user-fullname={{ user `ssh_username` }} ",
         "passwd/username={{ user `ssh_username` }} ",
         "passwd/user-password={{ user `ssh_password` }} ",
-        "passwd/user-password-again={{ user `ssh_password` }}",
+        "passwd/user-password-again={{ user `ssh_password` }} ",
         "<wait5>",
         "<enter>"
       ],
@@ -103,11 +103,19 @@
       "type": "shell"
     },
     {
+      "extra_arguments": [
+        "--extra-vars",
+        "\"desktop_ui={{ user `desktop_ui` }}\""
+      ],
       "playbook_files": [
-        "scripts/vm.yml",
-        "scripts/user.yml",
-        "scripts/app.yml",
-        "scripts/dev.yml"
+        "scripts/virtualbox.yml",
+        "scripts/tool.yml",
+        "scripts/fish.yml",
+        "scripts/docker.yml",
+        "scripts/nodejs.yml",
+        "scripts/ide.yml",
+        "scripts/chrome.yml",
+        "scripts/gnome.yml"
       ],
       "type": "ansible-local"
     },
@@ -121,11 +129,12 @@
   ],
   "variables": {
     "boot_wait": "5s",
+    "desktop_ui": "none",
     "iso_checksum": "cb6795ca61326e9fa58099898e53dc6c708f4b1473687fab5679f824adc78bbe1d543f3b4aed9e56613e7b150e27d6be317efc499e25a92efefed1ed623a90a6",
     "iso_url": "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.7.0-amd64-netinst.iso",
-    "ssh_password": "packer",
+    "ssh_password": "debme",
     "ssh_timeout": "30m",
-    "ssh_username": "packer",
+    "ssh_username": "debme",
     "vm_cpu": "1",
     "vm_disksize": "20000",
     "vm_name": "debian10",

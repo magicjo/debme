@@ -1,0 +1,27 @@
+---
+- name: "Tool.yml"
+  hosts: localhost
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: (tool) add dependencies
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+          - bzip2
+          - curl
+          - emacs
+          - htop
+          - iotop
+          - nano
+          - net-tools
+          - nmap
+          - p7zip-full
+          - terminator
+          - thefuck
+          - unrar
+          - unzip
+          - vim
+          - zip

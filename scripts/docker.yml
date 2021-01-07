@@ -1,0 +1,45 @@
+---
+- name: "Docker.yml"
+  hosts: localhost
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: (docker) install dependencies
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg-agent
+          - software-properties-common
+
+    - name: (docker) docker add key
+      apt_key:
+        url: "https://download.docker.com/linux/debian/gpg"
+        state: present
+
+    - name: (docker) docker add repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_lsb.codename|lower }} stable"
+        filename: "docker"
+        state: present
+        update_cache: yes
+
+    - name: (docker) install docker
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+          - containerd.io
+          - docker-ce
+          - docker-ce-cli
+
+    - name: (docker) add users to the docker group
+      user:
+        name: "{{ lookup('env','USER') }}"
+        groups: docker
+        append: yes

@@ -1,10 +1,39 @@
-# Packer Build - Debian 10
+# Packer Build
 
-**Debian Version**: 10.7.0
+Works with:
 
-**Builders**: virtualbox-iso
+- **Debian Version**: 10.7.0
 
-See the project [README.md](../README.md) for usage instructions.
+Build for:
+
+- **Builders**: virtualbox-iso
+
+## Requirements
+
+The following software must be installed/present on your local machine before you can use the project.
+
+- [`packer`](https://www.packer.io/)
+- [`virtualbox`](https://www.virtualbox.org/)
+
+### Validated with
+
+| *Software*    	| *Version* 	|
+| :---              |          ---: |
+| **Windows**    	| 10 (1909) 	|
+| **Packer**     	| 1.6.5     	|
+| **VirtualBox** 	| 6.1.16    	|
+
+## Usage
+
+Make sure all the required software (listed above) is installed, 
+then run:
+
+```shell
+# On windows
+$ packer.exe build -var-file 'YOUR-VAR-FILE' debian10\debian10.json
+```
+
+> After a few minutes, Packer should tell you the vm was generated successfully
 
 ## Variables
 
@@ -13,6 +42,12 @@ You can customize the build with variables.
 #### boot_wait
 
 The time to wait after booting. See [Packer Documentation](https://www.packer.io/docs/builders/virtualbox/iso#boot_wait).
+
+Default: `"gnome"`
+
+#### desktop_ui
+
+The desktop ui to install ans configure. Options: *gnome*, *none*.
 
 Default: `"5s"`
 
@@ -123,6 +158,7 @@ Default: `"32"`
 ```json
 {
     "boot_wait": "5s",
+    "desktop_ui": "gnome",
     "iso_checksum": "cb6795ca61326e9fa58099898e53dc6c708f4b1473687fab5679f824adc78bbe1d543f3b4aed9e56613e7b150e27d6be317efc499e25a92efefed1ed623a90a6",
     "iso_url": "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.7.0-amd64-netinst.iso",
     "ssh_password": "packer",
@@ -168,10 +204,10 @@ To use `pycharm` or `webstorm`, you must complete the installation (and create a
 
 ```shell
 # pycharm
-cd /opt/pychar*/bin
+cd /opt/Pycharm/bin
 ./pycharm.sh
 
 # webstorm
-cd /opt/webstorm*/bin
-./WebStorm.sh
+cd /opt/WebStorm/bin
+./webstorm.sh
 ```
