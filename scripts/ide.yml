@@ -48,6 +48,16 @@
       become: yes
       when: desktop_ui != "none"
 
+    - name: (ide) pycharm symbolic link
+      file:
+        src: /opt/Pycharm/bin/pycharm.sh
+        dest: /usr/local/bin/pycharm
+        owner: "{{ lookup('env','USER') }}"
+        group: "{{ lookup('env','USER') }}"
+        state: link
+      become: yes
+      when: desktop_ui != "none"
+
     - name: (ide) download webstorm
       get_url:
         url: "https://download.jetbrains.com/webstorm/WebStorm-2020.3.tar.gz"
@@ -78,5 +88,15 @@
         owner: "{{ lookup('env','USER') }}"
         group: "{{ lookup('env','USER') }}"
         recurse: yes
+      become: yes
+      when: desktop_ui != "none"
+
+    - name: (ide) webstorm symbolic link
+      file:
+        src: /opt/WebStorm/bin/webstorm.sh
+        dest: /usr/local/bin/webstorm
+        owner: "{{ lookup('env','USER') }}"
+        group: "{{ lookup('env','USER') }}"
+        state: link
       become: yes
       when: desktop_ui != "none"

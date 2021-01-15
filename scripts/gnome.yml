@@ -26,6 +26,7 @@
       delay: 10
       become: yes
       until: job_result.finished
+      when: desktop_ui == "gnome"
 
     - name: (gnome) configure gnome
       shell: "gsettings set {{ item.schema }} {{ item.key }} {{ item.value }}"

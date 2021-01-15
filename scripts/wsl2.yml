@@ -1,0 +1,25 @@
+---
+- name: "WSL2.yml"
+  hosts: localhost
+  gather_facts: yes
+  tasks:
+    - name: (wsl2) install xfce4
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+          - xfce4
+      become: yes
+      when: desktop_ui == "wsl2-win"
+
+    - name: (wsl2) configure DISPLAY
+      copy:
+        dest: "{{ lookup('env','HOME') }}/.config/fish/conf.d/wsl2.fish"
+        content: |
+          # https://techcommunity.microsoft.com/t5/windows-dev-appconsult/running-wsl-gui-apps-on-windows-10/ba-p/1493242
+          set -x DISPLAY (sed -n 's/nameserver //p' /etc/resolv.conf):0
+          set -x LIBGL_ALWAYS_INDIRECT 1
+          # export GDK_SCALE=0.5
+          # export GDK_DPI_SCALE=2
+      when: desktop_ui == "wsl2-win"

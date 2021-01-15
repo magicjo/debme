@@ -1,4 +1,4 @@
-# Packer Build
+# Packer Build For debian 10
 
 Works with:
 
@@ -43,13 +43,13 @@ You can customize the build with variables.
 
 The time to wait after booting. See [Packer Documentation](https://www.packer.io/docs/builders/virtualbox/iso#boot_wait).
 
-Default: `"gnome"`
+Default: `"5s"`
 
 #### desktop_ui
 
-The desktop ui to install ans configure. Options: *gnome*, *none*.
+The desktop ui to install and configure. Options: *gnome*, *none*.
 
-Default: `"5s"`
+Default: `"none"`
 
 #### iso_checksum
 

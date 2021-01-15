@@ -15,11 +15,13 @@
           - curl
           - gnupg-agent
           - software-properties-common
+      when: '"microsoft" not in ansible_kernel' # skip for wsl2
 
     - name: (docker) docker add key
       apt_key:
         url: "https://download.docker.com/linux/debian/gpg"
         state: present
+      when: '"microsoft" not in ansible_kernel' # skip for wsl2
 
     - name: (docker) docker add repository
       apt_repository:
@@ -27,6 +29,7 @@
         filename: "docker"
         state: present
         update_cache: yes
+      when: '"microsoft" not in ansible_kernel' # skip for wsl2
 
     - name: (docker) install docker
       apt:
@@ -37,6 +40,7 @@
           - containerd.io
           - docker-ce
           - docker-ce-cli
+      when: '"microsoft" not in ansible_kernel' # skip for wsl2
 
     - name: (docker) add users to the docker group
       user:
