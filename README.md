@@ -6,7 +6,8 @@ This project contains the Packer build configurations, and Ansible recipes for *
 Each builds a development base.
 Available builds include:
 
-- debian buster (*virtualbox*)- [`debian10` directory](./debian10)
+- debian buster (*virtualbox*)- [`debian10` directory](./debian10/README.md)
+- debian buster (*wsl2*)- [`debian10-wsl` directory](./debian10-wsl/README.md)
 
 ## Authors
 
