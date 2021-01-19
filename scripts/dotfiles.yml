@@ -1,0 +1,24 @@
+---
+- name: "Dotfiles.yml"
+  hosts: localhost
+  gather_facts: yes
+  tasks:
+    - name: (dotfiles) set facts for dotfiles_host
+      set_fact:
+        dotfiles: "/tmp/debme-dotfiles"
+      when: dotfiles_host is defined and dotfiles_host != ''
+
+    - name: (dotfiles) get dotfiles from host
+      get_url:
+        url: "http://{{ packer_http_addr }}/{{ dotfiles_host }}"
+        dest: "{{ dotfiles }}"
+      when: dotfiles_host is defined and dotfiles_host != ''
+
+    - name: (dotfiles) unarchive dotfiles
+      unarchive:
+        src: "{{ dotfiles }}"
+        dest: "{{ lookup('env','HOME') }}"
+        remote_src: yes
+        owner: "{{ lookup('env','USER') }}"
+        group: "{{ lookup('env','USER') }}"
+      when: dotfiles is defined and dotfiles != ''

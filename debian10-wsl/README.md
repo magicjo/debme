@@ -59,12 +59,27 @@ You can customize the build with options.
 
 #### --desktop-ui
 
-The desktop ui to install ans configure. Options: *wsl2-win*, *none*.
+The desktop ui to install and configure. Options: *wsl2-win*, *none*.
 
 Default: `"none"`
 
 ```shell
 $ ./debian10-wsl/debme.sh --desktop-ui wsl2-win
+```
+
+#### --dotfiles
+
+The dotfiles archive to use. Must be a path accessible via wsl2.
+
+Default: `not used`
+
+```shell
+$ ./debian10-wsl/debme.sh --dotfiles debme-dotfiles.tgz
+```
+
+To create your own `debme-dotfiles.tgz`, you can for example, run:
+```shell
+$ tar -czvf debme-dotfiles.tgz .ssh .gnupg ...
 ```
 
 ## What is installed
@@ -78,6 +93,7 @@ $ ./debian10-wsl/debme.sh --desktop-ui wsl2-win
 - `docker`
 - `vscode`, `pycharm`, `webstorm`
 - `chrome`
+- dotfiles
 - **...**
 
 ## Troubleshooting

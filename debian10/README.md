@@ -51,6 +51,28 @@ The desktop ui to install and configure. Options: *gnome*, *none*.
 
 Default: `"none"`
 
+#### dotfiles_host
+
+The dotfiles archive to use. Must be accessible via the http folder.
+
+Default: `not used`
+
+As example:
+```shell
+# In debme project
+cp ... ./http/resouces/debme-dotfiles.tgz
+
+# In variable file
+{
+  "dotfiles_host": "resouces/debme-dotfiles.tgz"
+}
+```
+
+To create your own `debme-dotfiles.tgz`, you can for example, run:
+```shell
+$ tar -czvf debme-dotfiles.tgz .ssh .gnupg ...
+```
+
 #### iso_checksum
 
 The checksum for the ISO file. See [Packer Documentation](https://www.packer.io/docs/builders/virtualbox/iso#iso_checksum).
