@@ -20,6 +20,6 @@
           # https://techcommunity.microsoft.com/t5/windows-dev-appconsult/running-wsl-gui-apps-on-windows-10/ba-p/1493242
           set -x DISPLAY (sed -n 's/nameserver //p' /etc/resolv.conf):0
           set -x LIBGL_ALWAYS_INDIRECT 1
-          # export GDK_SCALE=0.5
-          # export GDK_DPI_SCALE=2
+          # set -x GDK_SCALE "1"
+          # set -x GDK_DPI_SCALE "2"
       when: desktop_ui == "wsl2-win"
