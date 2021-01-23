@@ -45,6 +45,23 @@ The time to wait after booting. See [Packer Documentation](https://www.packer.io
 
 Default: `"5s"`
 
+#### custom_script_host
+
+The custom script to use. Must be accessible via the http folder.
+
+Default: `not used`
+
+As example:
+```shell
+# In debme project
+cp ... ./http/resouces/my_custom_script.sh
+
+# In variable file
+{
+  "custom_script_host": "resouces/my_custom_script.sh"
+}
+```
+
 #### desktop_ui
 
 The desktop ui to install and configure. Options: *gnome*, *none*.
@@ -213,6 +230,8 @@ Default: `"32"`
 - `docker`
 - `vscode`, `pycharm`, `webstorm`
 - `chrome`
+- dotfiles
+- custom script
 - **...**
 
 ## Troubleshooting

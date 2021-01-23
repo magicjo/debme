@@ -1,0 +1,30 @@
+---
+- name: "Custom.yml"
+  hosts: localhost
+  gather_facts: yes
+  tasks:
+    - name: (custom) set facts for custom_script_host
+      set_fact:
+        custom_script: "/tmp/debme-custom_script_host"
+      when: custom_script_host is defined and custom_script_host != ''
+
+    - name: (custom) get custom_script from host
+      get_url:
+        url: "http://{{ packer_http_addr }}/{{ custom_script_host }}"
+        dest: "{{ custom_script }}"
+      when: custom_script_host is defined and custom_script_host != ''
+
+    - name: (custom) ensure custom_script is executable
+      file:
+        path: "{{ custom_script }}"
+        owner: "{{ lookup('env','USER') }}"
+        group: "{{ lookup('env','USER') }}"
+        mode: "0777"
+      become: yes
+      when: custom_script is defined and custom_script != ''
+
+    - name: (custom) run custom_script
+      shell: "{{ custom_script }}"
+      args:
+        chdir: "{{ lookup('env','HOME') }}/"
+      when: custom_script is defined and custom_script != ''

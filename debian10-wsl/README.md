@@ -82,6 +82,16 @@ To create your own `debme-dotfiles.tgz`, you can for example, run:
 $ tar -czvf debme-dotfiles.tgz .ssh .gnupg ...
 ```
 
+#### --custom-script
+
+The custom script to use. Must be a path accessible via wsl2.
+
+Default: `not used`
+
+```shell
+$ ./debian10-wsl/debme.sh --custom-script custom_script.sh
+```
+
 ## What is installed
 
 - `Xfce`
@@ -94,6 +104,7 @@ $ tar -czvf debme-dotfiles.tgz .ssh .gnupg ...
 - `vscode`, `pycharm`, `webstorm`
 - `chrome`
 - dotfiles
+- custom script
 - **...**
 
 ## Troubleshooting
